@@ -38,11 +38,9 @@
 % elements de la llista de enters donada L. Ha de poder generar la
 % P i també comprovar una P donada
 
-
-
-
-
-
+prod([], 0)  :- !.
+prod([A],A)  :- !.
+prod([X|L], P) :- prod(L, R) , not(R = 0) , P is X * R.
 
 
 % PROB. B =========================================================
@@ -52,10 +50,8 @@
 % d'enters. El predicat ha de fallar si els dos vectors
 % tenen longituds diferents.
 
-
-
-
-
+pescalar([],[],0) :- !.
+pescalar([X|L1],[Y|L2],P) :- pescalar(L1,L2,R), P is X*Y+R.
 
 
 % PROB. C =========================================================
@@ -64,15 +60,24 @@
 
 % interseccio(+L1,+L2,?L3)
 
-
+interseccio([], _ ,[]) :- !.
+interseccio([X|L1], L2, L3) :- not(member(X,L2)), interseccio(L1,L2,L3).
+interseccio([X|L1], L2, [X|L3]) :- member(X,L2), interseccio(L1,L2,L3).
 
 
 % unio(+L1,+L2,?L3)
+% este se ejecuta completo
 
+% casos base
+unio([],[],[]) :- !.
+unio([],[],_) :- !.
 
+% añadimos X a L3 si no esta en L2, sino continuamos
+unio([X|L1],L2,[X|L3]) :- not(member(X,L2)), unio(L1,L2,L3).
+unio([X|L1],L2,L3) :- member(X,L2), unio(L1,L2,L3).
 
-
-
+% una vez L1 es vacia añadimos todos los elementos  de L2 ya que no estaran en L3
+unio([],[X|L2],[X|L3]) :- unio([],L2,L3).
 
 % PROB. D =========================================================
 % Usant append/3, escriu un predicat per calcular l'últim 
@@ -81,12 +86,12 @@
 
 % ultim(+L,?E)
 
-
+ultim(L,E) :- append(_,[X],L), E=X.
 
 
 % inversa(+L1,?L2)
-
-
+inversa([],[]).
+inversa([X|L1], R) :- inversa(L1,R2), append(R2,[X],R).
 
 
 
