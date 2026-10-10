@@ -44,6 +44,7 @@
 
 
 
+
 % PROB. B =========================================================
 % Escriu un predicat
 % pescalar(+L1,+L2,?P) que signifiqui: P és el producte escalar dels
