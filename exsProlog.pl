@@ -102,8 +102,9 @@ inversa([X|L1], R) :- inversa(L1,R2), append(R2,[X],R).
 % per a la N donada. Aquests nombres es defineixen així:
 % fib(1) = 1, fib(2) = 1, i si N > 2 llavors
 % fib(N) = fib(N-1) + fib(N-2)
-
-
+fib(1,1):-!.
+fib(2,1):-!.
+fib(N,F):- N > 2, N1 is N-1, fib(N1,F1), N2 is N-2, fib(N2,F2), F is F1+F2.
 
 
 
@@ -116,9 +117,17 @@ inversa([X|L1], R) :- inversa(L1,R2), append(R2,[X],R).
 % Tant P com N venen instanciats. El predicat deu ser capaç de
 % generar totes les solucions possibles,
 
+dado(1).
+dado(2).
+dado(3).
+dado(4).
+dado(5).
+dado(6).
 
+dados_2(0,0,[]).
+dados_2(P,N,[X|L]):- N > 0, dado(X), P >= X, P2 is P-X ,N2 is N-1, dados_2(P2,N2,L).
 
-
+dados(P,N,L) :- dados_2(P,N,L), write(L), nl, fail.
 
 
 % PROB. G =========================================================
@@ -132,12 +141,19 @@ inversa([X|L1], R) :- inversa(L1,R2), append(R2,[X],R).
 
 % suma(+L,?S)
 
-
+suma([],0).
+suma([X|L],S):- suma(L,S2), R is X+S2, S=R.
 
 
 % suma_la_resta(+L)
 
+% X elem, Total
 
+% X2 == actual*2 , cumplimos si X2 = Total
+sumar_resta_2(T, [X|_]) :- X2 is 2*X, T=X2,!.
+sumar_resta_2(T, [X|L]) :- X2 is 2*X, not(T=X2), sumar_resta_2(T,L).
+
+suma_la_resta(L) :- suma(L,T) , sumar_resta_2(T,L).
 
 
 
@@ -152,10 +168,14 @@ inversa([X|L1], R) :- inversa(L1,R2), append(R2,[X],R).
 % [[1,3],[2,1],[5,1],[3,2],[7,1]].
 
 
+count_ocurrences([],_,0).
+count_ocurrences([Y|L],X,N):- not(X==Y) ,count_ocurrences(L,X,N1), N is N1.
+count_ocurrences([Y|L],X,N):- X==Y,count_ocurrences(L,X,N1), N is N1+1.
 
+card_2([],_,_,R):- write(R), nl.
+card_2([X|L],ORI,SEEN,R1) :- not(member(X,SEEN)), append([X],SEEN,SEEN_2),count_ocurrences(ORI,X,C), append(R1,[[X,C]],R2), card_2(L,ORI,SEEN_2,R2).
 
-
-
+card(L) :- card_2(L,L,[],[]).
 
 % PROB. I ========================================================
 % Escriu un predicat
