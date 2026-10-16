@@ -147,15 +147,8 @@ suma([X|L],S):- suma(L,S2), R is X+S2, S=R.
 
 % suma_la_resta(+L)
 
-% X elem, Total
 
-% X2 == actual*2 , cumplimos si X2 = Total
-sumar_resta_2(T, [X|_]) :- X2 is 2*X, T=X2,!.
-sumar_resta_2(T, [X|L]) :- X2 is 2*X, not(T=X2), sumar_resta_2(T,L).
-
-suma_la_resta(L) :- suma(L,T) , sumar_resta_2(T,L).
-
-
+suma_la_resta(L) :- select(X,L,R) , suma(R,S) , X =:= S, !.
 
 
 % PROB. H =========================================================
@@ -168,14 +161,24 @@ suma_la_resta(L) :- suma(L,T) , sumar_resta_2(T,L).
 % [[1,3],[2,1],[5,1],[3,2],[7,1]].
 
 
+% ESTE PA CONTAR
 count_ocurrences([],_,0).
 count_ocurrences([Y|L],X,N):- not(X==Y) ,count_ocurrences(L,X,N1), N is N1.
 count_ocurrences([Y|L],X,N):- X==Y,count_ocurrences(L,X,N1), N is N1+1.
 
-card_2([],_,_,R):- write(R), nl.
-card_2([X|L],ORI,SEEN,R1) :- not(member(X,SEEN)), append([X],SEEN,SEEN_2),count_ocurrences(ORI,X,C), append(R1,[[X,C]],R2), card_2(L,ORI,SEEN_2,R2).
+% ESTA PARA PASR DE LISTA  A SET
+create_set([], []).
+create_set([X|L1], [X|L2]) :- not(member(X,L1)),create_set(L1,L2).
+create_set([_|L1], L2) :- create_set(L1,L2).
 
-card(L) :- card_2(L,L,[],[]).
+% PARA CADA ELEMENTO DEL SET VEO CUANTOS HAY EN LA ORIGINAL,
+do_work_card(L1, [X|L2], [Y|L3]) :- count_ocurrences(L1,X,N), Y=[X,N], do_work_card(L1,L2,L3).
+do_work_card(_,[],[]).
+
+% IMRPIRMO POR PANTALLA
+card(L) :- create_set(L,L1) , do_work_card(L,L1,R), !,write(R), nl.
+
+
 
 % PROB. I ========================================================
 % Escriu un predicat
@@ -187,8 +190,9 @@ card(L) :- card_2(L,L,[],[]).
 % ?- esta_ordenada([3,67,45]).
 % respon no.
 
-
-
+esta_ordenada([]).
+esta_ordenada([_]).
+esta_ordenada([X,Y|L]) :- X =< Y, esta_ordenada([Y|L]).
 
 
 
@@ -203,8 +207,12 @@ card(L) :- card_2(L,L,[],[]).
 % (possiblement diverses vegades, no cal que eviteu les repeticions).
 
 
+% caso baso, palabra vacia y palabra suelta
+is_palindrom([]).
+is_palindrom([_]).
+is_palindrom([X|L]) :- append(LR,[Y],L),X==Y , is_palindrom(LR).
 
-
+palindroms(L) :- permutation(L,R), is_palindrom(R) , write(R), nl, fail .
 
 
 
@@ -238,6 +246,8 @@ dom(_) :- write('no hi ha cadena'), nl.
 
 % a) Escriu el predicat ok(+P) que falta.
 
+ok([_]).
+ok([[_,X],[Y,_]|R]) :- X==Y, ok([[Y,_]|R]).
 
 
 
