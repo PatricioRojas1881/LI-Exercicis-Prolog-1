@@ -247,10 +247,7 @@ dom(_) :- write('no hi ha cadena'), nl.
 % a) Escriu el predicat ok(+P) que falta.
 
 ok([_]).
-ok([[_,X],[Y,_]|R]) :- X==Y, ok([[Y,_]|R]).
-
-
-
+ok([[_,X],[Y,Z]|R]) :- X == Y, ok([[Y,Z]|R]).
 
 
 % b) Estén el predicat p/2 per a que el programa també pugui
